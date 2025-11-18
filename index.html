@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資料夾檔案讀取器 (2.0)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f2f5;
+        color: #333;
+        line-height: 1.6;
+    }
+    .page-container {
+        width: 90%;
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+    .step {
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    .step h2 {
+        margin-top: 0;
+        color: #0056b3;
+        border-bottom: 2px solid #eef;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    .step h3 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        color: #17a2b8;
+    }
+    .input-group {
+        margin-bottom: 20px;
+    }
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+    .input-group label[for="includeTreeCheckbox"] {
+        display: inline-flex;
+        align-items: center;
+        font-weight: normal;
+        cursor: pointer;
+    }
+    .input-group input[type="checkbox"] {
+        margin-right: 8px;
+        width: 16px;
+        height: 16px;
+    }
+    input[type="file"], input[type="text"], input[type="number"] {
+        width: calc(100% - 24px);
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+        box-sizing: border-box;
+    }
+    .advanced-filter-group input[type="number"] {
+        width: 120px;
+        margin-right: 10px;
+    }
+    button {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        color: white;
+        background-color: #007bff;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s;
+        margin-top: 5px;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    button:active { transform: scale(0.98); }
+    button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+    .button-group {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .type-filter button { background-color: #17a2b8; }
+    .type-filter button:hover { background-color: #117a8b; }
+    #fileTree {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 6px;
+        max-height: 50vh;
+        overflow-y: auto;
+        background-color: #fdfdfd;
+    }
+    #fileTree ul {
+        list-style-type: none;
+        padding-left: 20px;
+        margin: 0;
+        position: relative;
+    }
+    #fileTree ul::before {
+        content: ''; position: absolute; left: 10px; top: 0; bottom: 0;
+        border-left: 1px dotted #bbb;
+    }
+    #fileTree li { margin-bottom: 8px; position: relative; padding-left: 25px; }
+    #fileTree li::before {
+        content: ''; position: absolute; top: 12px; left: -15px;
+        width: 15px; border-top: 1px dotted #bbb;
+    }
+    #fileTree li:last-child::after {
+        content: ''; position: absolute; left: -15px; top: 13px; bottom: 0;
+        border-left: 2px solid #fdfdfd;
+    }
+    #fileTree input[type="checkbox"] { display: none; }
+    #fileTree label {
+        cursor: pointer; padding-left: 35px; position: relative;
+        font-size: 16px; line-height: 24px; display: inline-flex;
+        align-items: center; min-height: 24px;
+    }
+    #fileTree label .label-text { display: inline-block; vertical-align: middle; }
+    #fileTree label .file-meta {
+        font-size: 0.8em;
+        color: #6c757d;
+        margin-left: 10px;
+        font-style: italic;
+    }
+    #fileTree label::before {
+        content: ''; position: absolute; left: 0; top: 50%;
+        transform: translateY(-50%); width: 22px; height: 22px;
+        border: 2px solid #007bff; border-radius: 4px;
+        background-color: #fff; box-sizing: border-box;
+        transition: background-color 0.2s, border-color 0.2s;
+    }
+    #fileTree input[type="checkbox"]:checked + label::before {
+        background-color: #007bff; border-color: #007bff;
+    }
+    #fileTree input[type="checkbox"]:checked + label::after {
+        content: '✔'; position: absolute; left: 5px; top: 50%;
+        transform: translateY(-50%); font-size: 15px; font-weight: bold;
+        color: white; line-height: 1;
+    }
+    #outputArea {
+        width: 100%; min-height: 300px; height: 60vh;
+        margin-top: 10px; padding: 12px; border: 1px solid #ccc;
+        border-radius: 6px; box-sizing: border-box; font-family: 'Courier New', Courier, monospace;
+        white-space: pre; background-color: #f8f9fa; font-size: 14px;
+    }
+    #status { margin-top: 15px; font-style: italic; color: #555; }
+    #tokenInfo {
+        margin-top: 15px; padding: 10px; background-color: #e9ecef;
+        border-radius: 6px; font-size: 14px; font-weight: bold;
+    }
+    #tokenCount { color: #0056b3; }
+    button.secondary { background-color: #6c757d; }
+    button.secondary:hover { background-color: #545b62; }
+    button.danger { background-color: #dc3545; }
+    button.danger:hover { background-color: #b02a37; }
+    
+    .advanced-filter-container {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+    .advanced-filter-group {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .compression-panel {
+        margin-top: 25px;
+        padding: 20px;
+        border: 1px solid #dce3ea;
+        border-radius: 10px;
+        background-color: #fefefe;
+    }
+    .compression-panel h3 {
+        margin-top: 0;
+        color: #0d6efd;
+    }
+    #compressedOutputArea {
+        width: 100%;
+        min-height: 260px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin-top: 12px;
+        font-family: 'Courier New', Courier, monospace;
+        background-color: #f4f7fb;
+        white-space: pre;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+    .stats-box {
+        background-color: #eef5ff;
+        border: 1px solid #d0e2ff;
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 13px;
+        margin-top: 10px;
+        white-space: pre-wrap;
+    }
+    .status-note {
+        margin-top: 8px;
+        color: #495057;
+        font-size: 14px;
+    }
+    .compression-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 20px;
+        margin: 10px 0 15px;
+    }
+    .compression-options label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>資料夾檔案讀取器 (最終修正版)</h1>
+        <p>本工具將引導您完成選擇資料夾、篩選檔案並合併其內容的步驟。所有操作均在目前頁面依序進行。</p>
+
+        <div class="step" id="step1-folder-select">
+            <h2>步驟 1：選擇資料夾</h2>
+            <div class="input-group">
+                <label for="folderInput">點擊下方按鈕選擇您的資料夾：</label>
+                <div id="folderInputContainer">
+                    <input type="file" id="folderInput" webkitdirectory directory multiple>
+                </div>
+            </div>
+            <p>選擇資料夾後，工具將自動分析檔案、估算 Token 並預先取消勾選非文字檔、過大、隱藏或符合 `Aking-ignore.txt` 規則的檔案。</p>
+        </div>
+
+        <div class="step" id="step2-file-tree-filter" style="display: none;">
+            <h2>步驟 2：檔案選擇與篩選</h2>
+            
+            <div class="input-group">
+                <input type="checkbox" id="includeTreeCheckbox" checked>
+                <label for="includeTreeCheckbox">在輸出開頭加入完整目錄結構文字</label>
+            </div>
+
+            <div class="advanced-filter-container">
+                <h3>進階篩選</h3>
+                <div class="advanced-filter-group">
+                    <label for="sizeLimitInput">去除大於 (KB):</label>
+                    <input type="number" id="sizeLimitInput" value="4096" min="1">
+                    <button id="deselectBySizeBtn" class="secondary">執行去除</button>
+                </div>
+                <div class="advanced-filter-group">
+                     <button id="deselectNonTextBtn" class="secondary">去除常見非文字檔</button>
+                     <button id="downloadIgnoreFileBtnStep2" class="secondary">產生並下載 Aking-ignore</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <h3>依類型篩選檔案</h3>
+                <input type="text" id="fileTypeInput" placeholder="例如：.py, .txt (逗號分隔)">
+                <div class="button-group type-filter">
+                    <button id="selectByTypeBtn">選取此類型</button>
+                    <button id="deselectByTypeBtn">取消此類型</button>
+                </div>
+            </div>
+            
+            <h3>檔案結構樹</h3>
+            <div id="fileTree">請先在步驟 1 選擇一個資料夾</div>
+
+            <div id="status"></div>
+            <div class="button-group">
+                <button id="processButton">前往步驟 3：產生合併內容</button>
+                <button id="backToStep1Button" class="secondary">返回步驟 1 重新選擇資料夾</button>
+            </div>
+        </div>
+
+        <div class="step" id="step3-output" style="display: none;">
+             <h2>步驟 3：合併內容預覽與匯出</h2>
+            <textarea id="outputArea" readonly placeholder="選取的檔案內容將會顯示在這裡..."></textarea>
+            <div id="tokenInfo">預估 Token 數量：<span id="tokenCount">0</span></div>
+            <div class="button-group">
+                <button id="startUpdateFlowButton" class="secondary">更新內容 (需重選資料夾)</button>
+                <button id="copyToClipboardButton">複製到剪貼簿</button>
+                <button id="downloadTxtButton">下載 TXT</button>
+                <button id="splitDownloadButton" class="secondary">分割下載 (依 Token)</button>
+                <button id="downloadPdfButton">下載 PDF</button>
+                <button id="downloadIgnoreFileBtnStep3" class="secondary">產生並下載 Aking-ignore</button>
+                <button id="backToStep2Button" class="secondary">返回步驟 2 修改選擇</button>
+                <button id="resetButton" class="danger">全部重來 (返回步驟 1)</button>
+            </div>
+            <div class="compression-panel">
+                <h3>Token 壓縮 (C 專案)</h3>
+                <p class="status-note">使用與 Node.js 工具相同的規則：合併檔案、統一換行、移除連續空白行並縮短高頻變數。</p>
+                <div class="compression-options">
+                    <label><input type="checkbox" id="collapseBlankLinesCheckbox" checked> 合併連續空白行</label>
+                    <label><input type="checkbox" id="compactWhitespaceCheckbox" checked> 移除多餘縮排</label>
+                    <label><input type="checkbox" id="stripCommentsCheckbox"> 移除所有註解</label>
+                    <label><input type="checkbox" id="renameVariablesCheckbox" checked> 縮短變數名稱</label>
+                    <label><input type="checkbox" id="renameFunctionsCheckbox" checked> 縮短函數名稱</label>
+                </div>
+                <div class="button-group">
+                    <button id="runCompressionButton">執行 Token 壓縮</button>
+                    <button id="downloadCompressedBtn" class="secondary" disabled>下載壓縮 TXT</button>
+                    <button id="downloadVariableMapBtn" class="secondary" disabled>下載對應 JSON</button>
+                    <button id="downloadCompressionReportBtn" class="secondary" disabled>下載報告 JSON</button>
+                </div>
+                <div id="compressionStatus" class="status-note"></div>
+                <pre id="compressionStats" class="stats-box">尚未執行壓縮。</pre>
+                <textarea id="compressedOutputArea" readonly placeholder="執行壓縮後，結果會顯示在此..."></textarea>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- DOM Element References ---
+    const fileTreeDiv = document.getElementById('fileTree');
+    const processButton = document.getElementById('processButton');
+    const outputArea = document.getElementById('outputArea');
+    const statusDiv = document.getElementById('status');
+    const fileTypeInput = document.getElementById('fileTypeInput');
+    const selectByTypeBtn = document.getElementById('selectByTypeBtn');
+    const deselectByTypeBtn = document.getElementById('deselectByTypeBtn');
+    const step1Div = document.getElementById('step1-folder-select');
+    const step2Div = document.getElementById('step2-file-tree-filter');
+    const step3Div = document.getElementById('step3-output');
+    const backToStep1Button = document.getElementById('backToStep1Button');
+    const backToStep2Button = document.getElementById('backToStep2Button');
+    const resetButton = document.getElementById('resetButton');
+    const copyToClipboardButton = document.getElementById('copyToClipboardButton');
+    const downloadTxtButton = document.getElementById('downloadTxtButton');
+    const downloadPdfButton = document.getElementById('downloadPdfButton');
+    const includeTreeCheckbox = document.getElementById('includeTreeCheckbox');
+    const tokenCountSpan = document.getElementById('tokenCount');
+    const splitDownloadButton = document.getElementById('splitDownloadButton');
+    const sizeLimitInput = document.getElementById('sizeLimitInput');
+    const deselectBySizeBtn = document.getElementById('deselectBySizeBtn');
+    const deselectNonTextBtn = document.getElementById('deselectNonTextBtn');
+    const startUpdateFlowButton = document.getElementById('startUpdateFlowButton');
+    const downloadIgnoreFileBtnStep2 = document.getElementById('downloadIgnoreFileBtnStep2');
+    const downloadIgnoreFileBtnStep3 = document.getElementById('downloadIgnoreFileBtnStep3');
+    const runCompressionButton = document.getElementById('runCompressionButton');
+    const downloadCompressedBtn = document.getElementById('downloadCompressedBtn');
+    const downloadVariableMapBtn = document.getElementById('downloadVariableMapBtn');
+    const downloadCompressionReportBtn = document.getElementById('downloadCompressionReportBtn');
+    const compressionStatusDiv = document.getElementById('compressionStatus');
+    const compressionStatsPre = document.getElementById('compressionStats');
+    const compressedOutputArea = document.getElementById('compressedOutputArea');
+    const collapseBlankLinesCheckbox = document.getElementById('collapseBlankLinesCheckbox');
+    const compactWhitespaceCheckbox = document.getElementById('compactWhitespaceCheckbox');
+    const stripCommentsCheckbox = document.getElementById('stripCommentsCheckbox');
+    const renameVariablesCheckbox = document.getElementById('renameVariablesCheckbox');
+    const renameFunctionsCheckbox = document.getElementById('renameFunctionsCheckbox');
+
+
+    // --- Global State & Constants ---
+    let folderInputElement;
+    let fileSystemTree = new Map();
+    let allFileObjects = [];
+    let lastSelectedFiles = [];
+    let savedSelectionState = null;
+    let compressionResult = null;
+    
+    const NON_TEXT_EXTENSIONS = new Set([
+        '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg',
+        '.mp3', '.wav', '.ogg', '.m4a', '.flac',
+        '.mp4', '.mov', '.avi', '.wmv', '.mkv', '.flv',
+        '.zip', '.rar', '.7z', '.tar', '.gz',
+        '.exe', '.dll', '.so', '.dmg', '.app',
+        '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+        '.db', '.sqlite', '.dat',
+        '.pyc', '.o', '.class', '.jar', '.lock'
+    ]);
+
+    const COMMENT_BLOCK_REGEX = /\/\*[\s\S]*?\*\//g;
+    const COMMENT_LINE_REGEX = /(^|[^:])\/\/.*$/gm;
+    const PREPROCESSOR_REGEX = /^\s*#.*$/gm;
+    const MIN_VARIABLE_NAME_LENGTH = 3;
+    const MIN_OCCURRENCE_THRESHOLD = 3;
+    const MIN_FUNCTION_NAME_LENGTH = 4;
+    const MIN_FUNCTION_OCCURRENCE_THRESHOLD = 2;
+    const RESERVED_IDENTIFIERS = new Set([
+        'auto','break','case','char','const','continue','default','do','double','else','enum','extern','float','for','goto','if','inline','int','long','register','restrict','return','short','signed','sizeof','static','struct','switch','typedef','union','unsigned','void','volatile','while','_Bool','_Complex','_Imaginary','bool','true','false','size_t','uint8_t','uint16_t','uint32_t','uint64_t','int8_t','int16_t','int32_t','int64_t','float32_t','float64_t','Device_init','Device_initGPIO','Interrupt_initModule','Interrupt_initVectorTable','__mdebugstop'
+    ]);
+    const RESERVED_FUNCTIONS = new Set([...RESERVED_IDENTIFIERS, 'main']);
+
+
+    // --- Event Listeners ---
+    document.addEventListener('DOMContentLoaded', () => {
+        reinitFolderInput();
+        showStep('step1-folder-select');
+    });
+    
+    processButton.addEventListener('click', generateOutput);
+    selectByTypeBtn.addEventListener('click', () => filterByType(true));
+    deselectByTypeBtn.addEventListener('click', () => filterByType(false));
+    backToStep1Button.addEventListener('click', resetAndGoToStep1);
+    backToStep2Button.addEventListener('click', () => showStep('step2-file-tree-filter'));
+    resetButton.addEventListener('click', resetAndGoToStep1);
+    copyToClipboardButton.addEventListener('click', handleCopyToClipboard);
+    downloadTxtButton.addEventListener('click', handleDownloadTxt);
+    downloadPdfButton.addEventListener('click', handleDownloadPdf);
+    splitDownloadButton.addEventListener('click', handleSplitDownload);
+    deselectBySizeBtn.addEventListener('click', handleDeselectBySize);
+    deselectNonTextBtn.addEventListener('click', handleDeselectNonText);
+    startUpdateFlowButton.addEventListener('click', startUpdateFlow);
+    downloadIgnoreFileBtnStep2.addEventListener('click', handleDownloadIgnoreFile);
+    downloadIgnoreFileBtnStep3.addEventListener('click', handleDownloadIgnoreFile);
+    runCompressionButton.addEventListener('click', handleRunCompression);
+    downloadCompressedBtn.addEventListener('click', () => {
+        if (compressionResult) {
+            downloadTextBlob(compressionResult.compressedOutput, 'merged_compressed_ui.txt');
+        }
+    });
+    downloadVariableMapBtn.addEventListener('click', () => {
+        if (compressionResult) {
+            downloadJsonBlob(compressionResult.replacements, 'identifier_map_ui.json');
+        }
+    });
+    downloadCompressionReportBtn.addEventListener('click', () => {
+        if (compressionResult) {
+            downloadJsonBlob(compressionResult.report, 'compression_report_ui.json');
+        }
+    });
+
+    fileTreeDiv.addEventListener('change', (event) => {
+        if (event.target.type === 'checkbox') {
+            const path = event.target.dataset.path;
+            const node = findNodeByPath(path, fileSystemTree);
+            if (node) {
+                // --- BUG FIX: Pass 'true' to ensure the interaction propagates ---
+                updateSelectionState(node, event.target.checked, true); 
+            }
+        }
+    });
+
+    // --- Core Functions ---
+
+    function reinitFolderInput() {
+        const container = document.getElementById('folderInputContainer');
+        if (!container) return;
+        if (folderInputElement) {
+            folderInputElement.removeEventListener('change', handleFolderSelect);
+        }
+        container.innerHTML = '';
+        const newInput = document.createElement('input');
+        newInput.type = 'file';
+        newInput.id = 'folderInput';
+        newInput.webkitdirectory = true;
+        newInput.directory = true;
+        newInput.multiple = true;
+        container.appendChild(newInput);
+        folderInputElement = newInput;
+        folderInputElement.addEventListener('change', handleFolderSelect);
+    }
+
+    function showStep(stepIdToShow) {
+        [step1Div, step2Div, step3Div].forEach(step => {
+            step.style.display = (step.id === stepIdToShow) ? 'block' : 'none';
+        });
+        const activeStep = document.getElementById(stepIdToShow);
+        if (activeStep) {
+            setTimeout(() => activeStep.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+        }
+    }
+
+    function resetAndGoToStep1() {
+        fileSystemTree.clear();
+        allFileObjects = [];
+        lastSelectedFiles = [];
+        savedSelectionState = null;
+        fileTreeDiv.innerHTML = '請先在步驟 1 選擇一個資料夾';
+        outputArea.value = '';
+        statusDiv.textContent = '';
+        fileTypeInput.value = '';
+        includeTreeCheckbox.checked = true;
+        tokenCountSpan.textContent = '0';
+        resetCompressionSection();
+        reinitFolderInput();
+        showStep('step1-folder-select');
+    }
+    
+    async function handleFolderSelect(event) {
+        const files = event.target.files;
+        if (!files.length) {
+            savedSelectionState = null; 
+            return;
+        }
+        
+        statusDiv.textContent = '正在讀取最新檔案並建立檔案樹...';
+        fileSystemTree.clear();
+        
+        // 先過濾掉包含系統資料夾或隱藏檔案的檔案
+        allFileObjects = Array.from(files).filter(file => {
+            const pathParts = file.webkitRelativePath.split('/');
+            const fileName = pathParts[pathParts.length - 1];
+            
+            // 過濾掉檔案名稱以 . 或 _ 開頭的檔案（例如 .gitignore, _temp.txt）
+            if (fileName.startsWith('.') || fileName.startsWith('_')) {
+                return false;
+            }
+            
+            // 檢查路徑中是否包含以 . 或 _ 開頭的資料夾
+            const hasSystemFolder = pathParts.some((part, index) => {
+                // 跳過根目錄和檔案名稱本身
+                if (index === 0 || index === pathParts.length - 1) return false;
+                return (part.startsWith('.') || part.startsWith('_')) && part.length > 1;
+            });
+            return !hasSystemFolder; // 只保留不包含系統資料夾的檔案
+        });
+
+        for (const file of allFileObjects) {
+            const pathParts = file.webkitRelativePath.split('/');
+            let currentLevel = fileSystemTree;
+            let currentPath = [];
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                currentPath.push(part);
+                const nodePath = currentPath.join('/');
+                if (i === pathParts.length - 1) { 
+                    if (!currentLevel.has(part)) {
+                         currentLevel.set(part, {
+                            name: part, type: 'file', path: nodePath,
+                            fileObject: file, selected: true, children: null,
+                            webkitRelativePath: file.webkitRelativePath // Add relative path
+                        });
+                    }
+                } else { 
+                    if (!currentLevel.has(part)) {
+                        currentLevel.set(part, {
+                            name: part, type: 'folder', path: nodePath,
+                            selected: true, children: new Map(),
+                            webkitRelativePath: currentPath.slice(0, i + 1).join('/') // Add relative path
+                        });
+                    }
+                    if (currentLevel.get(part).type === 'file') { 
+                        currentLevel.get(part).type = 'folder';
+                        currentLevel.get(part).children = currentLevel.get(part).children || new Map();
+                        currentLevel.get(part).selected = true;
+                    }
+                    currentLevel = currentLevel.get(part).children;
+                }
+            }
+        }
+        
+        renderFileTree();
+        
+        if (savedSelectionState) {
+            statusDiv.textContent = '正在恢復您先前的選擇...';
+            await restoreSelectionState(savedSelectionState);
+            savedSelectionState = null; 
+            await generateOutput(); 
+        } else {
+            statusDiv.textContent = `已載入 ${allFileObjects.length} 個項目。正在分析檔案內容...`;
+            showStep('step2-file-tree-filter');
+            await processFileMetadataAndApplyDefaults();
+        }
+    }
+
+    function startUpdateFlow() {
+        statusDiv.textContent = '正在保存當前選擇狀態...';
+        const selectedPaths = new Set();
+        getAllNodes(fileSystemTree, true).forEach(node => { 
+            if (node.selected) {
+                selectedPaths.add(node.path);
+            }
+        });
+        
+        savedSelectionState = {
+            paths: selectedPaths,
+            includeTree: includeTreeCheckbox.checked
+        };
+        
+        statusDiv.textContent = '請重新選擇同一個資料夾以載入最新內容。';
+        reinitFolderInput();
+        folderInputElement.click();
+    }
+    
+    async function restoreSelectionState(state) {
+        includeTreeCheckbox.checked = state.includeTree;
+        
+        getAllNodes(fileSystemTree, true).forEach(node => {
+            if (!state.paths.has(node.path)) {
+                updateSelectionState(node, false, false);
+            } else {
+                updateSelectionState(node, true, false);
+            }
+        });
+        await processFileMetadataAndApplyDefaults();
+    }
+
+    async function processFileMetadataAndApplyDefaults() {
+        const allNodes = getAllNodes(fileSystemTree, true);
+        let processedCount = 0;
+        
+        let ignorePatterns = new Set();
+        const rootFolderPrefix = allFileObjects.length > 0 ? allFileObjects[0].webkitRelativePath.split('/')[0] + '/' : '';
+        const ignoreFile = allFileObjects.find(f => f.webkitRelativePath === rootFolderPrefix + 'Aking-ignore.txt');
+
+        if(ignoreFile) {
+            try {
+                const ignoreContent = await ignoreFile.text();
+                ignorePatterns = new Set(ignoreContent.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#')));
+                statusDiv.textContent = '已成功讀取 Aking-ignore.txt 規則。';
+            } catch (e) {
+                statusDiv.textContent = '讀取 Aking-ignore.txt 檔案失敗。';
+            }
+        }
+        
+        const applyAutoDeselection = !savedSelectionState; 
+        let deselectedCount = 0;
+
+        for (const node of allNodes) {
+            let shouldDeselect = false;
+            const pathParts = node.webkitRelativePath.split('/');
+            
+            // 檢查 Aking-ignore 規則
+            if (pathParts.some(part => ignorePatterns.has(part))) {
+                shouldDeselect = true;
+            }
+
+            if (node.type === 'file') {
+                // 如果檔案已經被標記為需要排除，就不用再分析內容了
+                if (shouldDeselect) {
+                    updateFileNodeLabel(node, 0, false, "(已忽略)");
+                    if (applyAutoDeselection && node.selected) {
+                        updateSelectionState(node, false, false); 
+                        deselectedCount++;
+                    }
+                    continue;
+                }
+                
+                let isText = isLikelyTextFile(node.name);
+                let tokens = 0;
+                
+                // 先檢查檔案大小，如果太大就不要讀取內容
+                const fileSizeKB = node.fileObject.size / 1024;
+                if (fileSizeKB > 10240) { // 超過 10MB 的檔案直接標記為過大
+                    updateFileNodeLabel(node, 0, false, `(檔案過大: ${fileSizeKB.toFixed(2)} KB)`);
+                    shouldDeselect = true;
+                } else {
+                    try {
+                        if (isText) {
+                            const fileContent = await node.fileObject.text();
+                            tokens = estimateTokens(fileContent);
+                        }
+                        updateFileNodeLabel(node, tokens, isText);
+                        if (!isText || tokens > 50000) { shouldDeselect = true; }
+                    } catch (e) {
+                        console.error(`Error processing file ${node.path}:`, e);
+                        updateFileNodeLabel(node, 0, false, "[讀取錯誤]");
+                        shouldDeselect = true;
+                    }
+                }
+            }
+
+            if (applyAutoDeselection && shouldDeselect) {
+                if (node.selected) {
+                    updateSelectionState(node, false, false); 
+                    deselectedCount++;
+                }
+            }
+            processedCount++;
+        }
+        
+        if (applyAutoDeselection) {
+            statusDiv.textContent = `分析完成！共 ${allNodes.length} 個項目，已自動取消勾選 ${deselectedCount} 個不符合條件的項目。`;
+        } else {
+             statusDiv.textContent = `所有檔案重新分析完成。`;
+        }
+    }
+
+    function renderFileTree() {
+        fileTreeDiv.innerHTML = '';
+        const rootUl = document.createElement('ul');
+        appendTreeNodes(fileSystemTree, rootUl);
+        fileTreeDiv.appendChild(rootUl);
+    }
+    
+    function appendTreeNodes(nodeMap, parentElement) {
+        const sortedEntries = [...nodeMap.entries()].sort(([keyA, valA], [keyB, valB]) => {
+            if (valA.type === 'folder' && valB.type === 'file') return -1;
+            if (valA.type === 'file' && valB.type === 'folder') return 1;
+            return keyA.localeCompare(keyB);
+        });
+
+        for (const [name, node] of sortedEntries) {
+            const li = document.createElement('li');
+            const randomSuffix = Math.random().toString(36).substring(2, 7);
+            const checkboxId = `cb-${node.path.replace(/[^a-zA-Z0-9_-]/g, '_')}-${randomSuffix}`;
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = checkboxId;
+            checkbox.checked = node.selected;
+            checkbox.dataset.path = node.path;
+            
+            const label = document.createElement('label');
+            label.htmlFor = checkboxId;
+
+            const labelTextSpan = document.createElement('span');
+            labelTextSpan.classList.add('label-text');
+            const icon = node.type === 'folder' ? '📁 ' : '📄 ';
+            labelTextSpan.textContent = icon + node.name;
+            
+            const metaSpan = document.createElement('span');
+            metaSpan.classList.add('file-meta');
+            if (node.type === 'file') {
+                 metaSpan.textContent = '(分析中...)';
+            }
+
+            label.appendChild(labelTextSpan);
+            label.appendChild(metaSpan);
+            li.appendChild(checkbox);
+            li.appendChild(label);
+            
+            node.checkboxElement = checkbox; 
+            node.metaElement = metaSpan;
+
+            if (node.type === 'folder' && node.children && node.children.size > 0) {
+                const childrenUl = document.createElement('ul');
+                appendTreeNodes(node.children, childrenUl);
+                li.appendChild(childrenUl);
+            }
+            parentElement.appendChild(li);
+        }
+    }
+    
+    function updateFileNodeLabel(node, tokens, isText, errorMsg = '') {
+        if (!node.metaElement) return;
+        if (errorMsg) {
+            node.metaElement.textContent = errorMsg;
+            node.metaElement.style.color = '#dc3545';
+            return;
+        }
+        const fileSizeKB = (node.fileObject.size / 1024).toFixed(2);
+        if (isText) {
+            node.metaElement.textContent = `(${tokens.toLocaleString()} Tokens, ${fileSizeKB} KB)`;
+            node.metaElement.style.color = tokens > 50000 ? '#dc3545' : '#6c757d';
+        } else {
+            node.metaElement.textContent = `(非文字檔, ${fileSizeKB} KB)`;
+            node.metaElement.style.color = '#dc3545';
+        }
+    }
+    
+    function findNodeByPath(path, currentMapLevel) {
+        const parts = path.split('/');
+        let node = null;
+        let currentLevel = currentMapLevel;
+        for (const part of parts) {
+            if (!currentLevel || !currentLevel.has(part)) return null;
+            node = currentLevel.get(part);
+            currentLevel = (node.type === 'folder') ? node.children : null;
+        }
+        return node;
+    }
+    
+    // --- BUG FIX: Rewritten recursive update function for reliability ---
+    function updateSelectionState(node, isSelected, isUserInteraction) {
+        node.selected = isSelected;
+        if (node.checkboxElement) {
+            node.checkboxElement.checked = isSelected;
+        }
+
+        // If the change was made by a user on a folder, propagate it down forcefully.
+        if (node.type === 'folder' && node.children && isUserInteraction) {
+            for (const childNode of node.children.values()) {
+                // The 'true' here is crucial to continue the recursive chain.
+                updateSelectionState(childNode, isSelected, true); 
+            }
+        }
+    }
+
+    // --- Filter and Action Functions ---
+
+    // --- FEATURE UPDATE & BUG FIX: Dynamically generate .Aking-ignore based on actual unselected items ---
+    function handleDownloadIgnoreFile() {
+        const unselectedRoots = new Set();
+        
+        // Helper function to find the highest-level unselected nodes
+        function findUnselectedRoots(nodeMap) {
+            for (const node of nodeMap.values()) {
+                if (!node.selected) {
+                    // If this node is unselected, add its name and don't check its children.
+                    unselectedRoots.add(node.name);
+                } else if (node.type === 'folder' && node.children) {
+                    // If it's selected, continue searching in its children.
+                    findUnselectedRoots(node.children);
+                }
+            }
+        }
+
+        findUnselectedRoots(fileSystemTree);
+
+        let content = `# 這是一個根據您當前選擇產生的忽略檔案 (Aking-ignore.txt)
+# 將此檔案放在您要讀取的資料夾的根目錄下，下次讀取時將會自動套用。
+# 每一行代表一個要忽略的檔案或資料夾名稱 (會遞迴忽略其下所有內容)。
+# 以 # 開頭的行是註解，會被忽略。
+#
+# --- 範例規則 ---
+# node_modules
+# .env
+# dist
+# build
+#
+# --- 您目前未勾選的項目 ---
+`;
+        
+        if (unselectedRoots.size > 0) {
+            content += Array.from(unselectedRoots).join('\n');
+        } else {
+            content += "# (您已全選所有項目)";
+        }
+
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Aking-ignore.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+
+
+    function handleDeselectBySize() {
+        const sizeLimitKB = parseFloat(sizeLimitInput.value);
+        if (isNaN(sizeLimitKB) || sizeLimitKB <= 0) {
+            alert("請輸入一個有效的檔案大小 (KB)。");
+            return;
+        }
+        const sizeLimitBytes = sizeLimitKB * 1024;
+        let count = 0;
+        getAllNodes(fileSystemTree).forEach(node => {
+            if (node.fileObject && node.fileObject.size > sizeLimitBytes) {
+                if (node.selected) {
+                    updateSelectionState(node, false, true);
+                    count++;
+                }
+            }
+        });
+        statusDiv.textContent = `操作完成：已取消勾選 ${count} 個大於 ${sizeLimitKB} KB 的檔案。`;
+    }
+
+    function handleDeselectNonText() {
+        let count = 0;
+        getAllNodes(fileSystemTree).forEach(node => {
+            if (!isLikelyTextFile(node.name)) {
+                if (node.selected) {
+                    updateSelectionState(node, false, true);
+                    count++;
+                }
+            }
+        });
+        statusDiv.textContent = `操作完成：已取消勾選 ${count} 個常見的非文字檔案。`;
+    }
+
+    function filterByType(select) {
+        const typesString = fileTypeInput.value.trim();
+        if (!typesString) {
+            alert('請輸入要篩選的檔案類型，例如 .txt, .js');
+            return;
+        }
+        const types = typesString.split(',').map(t => t.trim().toLowerCase()).filter(t => t.startsWith('.'));
+        if (!types.length) {
+            alert('無效的檔案類型格式。請確保以 . 開頭，例如 .py');
+            return;
+        }
+        let changedCount = 0;
+        getAllNodes(fileSystemTree).forEach(node => {
+            if(node.type === 'file'){
+                const fileExt = ('.' + node.name.split('.').pop()).toLowerCase();
+                if (types.includes(fileExt)) {
+                    if (node.selected !== select) {
+                        updateSelectionState(node, select, false);
+                        changedCount++;
+                    }
+                }
+            }
+        });
+        statusDiv.textContent = `已按類型 ${types.join(', ')} ${select ? '選取' : '取消選取'} 了 ${changedCount} 個檔案。`;
+    }
+
+    async function generateOutput() {
+        outputArea.value = '';
+        statusDiv.textContent = '正在讀取檔案內容...';
+        showStep('step3-output'); 
+
+        let outputContent = '';
+        lastSelectedFiles = [];
+        resetCompressionSection();
+
+        collectSelectedFiles(fileSystemTree);
+        
+        if (includeTreeCheckbox.checked) {
+            outputContent += '--- 目錄結構 ---\n';
+            outputContent += generateDirectoryTreeString(fileSystemTree, '', true);
+            outputContent += '\n--- 檔案內容 ---\n\n';
+        }
+
+        if (lastSelectedFiles.length === 0) {
+            outputArea.value = outputContent + "沒有選取任何檔案。";
+            statusDiv.textContent = "完成。沒有檔案可處理。"; 
+            tokenCountSpan.textContent = estimateTokens(outputArea.value).toLocaleString();
+            return;
+        }
+
+        let filesReadSoFar = 0;
+        outputArea.placeholder = `正在處理... 已讀取 0 / ${lastSelectedFiles.length} 個檔案。`;
+
+        for (const node of lastSelectedFiles) {
+            try {
+                const fileContent = await node.fileObject.text();
+                outputContent += `路徑/${node.webkitRelativePath}內容如下：\n`;
+                outputContent += `${fileContent}\n\n`;
+                filesReadSoFar++;
+                if (filesReadSoFar % 5 === 0 || filesReadSoFar === lastSelectedFiles.length) { 
+                    outputArea.placeholder = `正在處理... 已讀取 ${filesReadSoFar} / ${lastSelectedFiles.length} 個檔案。`;
+                }
+            } catch (error) {
+                outputContent += `路徑/${node.webkitRelativePath}內容如下：\n[錯誤：無法讀取檔案內容 - ${error.message}]\n\n`;
+                console.error(`讀取檔案 ${node.path} 失敗:`, error);
+            }
+        }
+
+        outputArea.value = outputContent;
+        outputArea.placeholder = "選取的檔案內容將會顯示在這裡...";
+        statusDiv.textContent = `完成。共處理 ${filesReadSoFar} 個檔案。內容已更新。`;
+        tokenCountSpan.textContent = estimateTokens(outputContent).toLocaleString();
+    }
+
+    function resetCompressionSection() {
+        compressionResult = null;
+        compressedOutputArea.value = '';
+        compressionStatsPre.textContent = '尚未執行壓縮。';
+        compressionStatusDiv.textContent = '';
+        downloadCompressedBtn.disabled = true;
+        downloadVariableMapBtn.disabled = true;
+        downloadCompressionReportBtn.disabled = true;
+    }
+
+    async function handleRunCompression() {
+        if (!lastSelectedFiles.length) {
+            alert('請先完成步驟 3 的一般合併，確保有選取的檔案。');
+            return;
+        }
+        compressionStatusDiv.textContent = '正在載入檔案並執行壓縮...';
+        runCompressionButton.disabled = true;
+        downloadCompressedBtn.disabled = true;
+        downloadVariableMapBtn.disabled = true;
+        downloadCompressionReportBtn.disabled = true;
+        try {
+            const fileEntries = [];
+            for (const node of lastSelectedFiles) {
+                const content = await node.fileObject.text();
+                fileEntries.push({ relativePath: node.webkitRelativePath, content });
+            }
+            const options = {
+                collapseBlankLines: collapseBlankLinesCheckbox.checked,
+                compactWhitespace: compactWhitespaceCheckbox.checked,
+                stripComments: stripCommentsCheckbox.checked,
+                renameVariables: renameVariablesCheckbox.checked,
+                renameFunctions: renameFunctionsCheckbox.checked
+            };
+            const compression = await runCompressionPipeline(fileEntries, options);
+            compressionResult = { ...compression, options };
+            updateCompressionUI();
+            compressionStatusDiv.textContent = '壓縮完成。';
+        } catch (error) {
+            console.error('壓縮過程發生錯誤:', error);
+            compressionStatusDiv.textContent = '壓縮失敗，請查看 Console。';
+        } finally {
+            runCompressionButton.disabled = false;
+        }
+    }
+
+    function updateCompressionUI() {
+        if (!compressionResult) {
+            resetCompressionSection();
+            return;
+        }
+        const { report, compressedOutput } = compressionResult;
+        const lines = [
+            `檔案數量 : ${report.filesProcessed}`,
+            `原始大小 : ${report.rawBytes.toLocaleString()} bytes (~${report.rawTokenEstimate.toLocaleString()} tokens)`,
+            `壓縮大小 : ${report.compressedBytes.toLocaleString()} bytes (~${report.compressedTokenEstimate.toLocaleString()} tokens)`,
+            `節省空間 : ${report.byteSavings.toLocaleString()} bytes (${report.reductionPercent}%)`,
+            `變數映射 : ${report.variableReplacements}/${report.candidateVariables}`,
+            `函數映射 : ${report.functionReplacements}/${report.candidateFunctions}`,
+            `總替換數 : ${report.replacementsApplied}`
+        ];
+        const strategies = report.strategies || {};
+        lines.push('--- 策略設定 ---');
+        lines.push(`合併空白 : ${strategies.collapseBlankLines ? '是' : '否'}`);
+        lines.push(`縮排壓縮 : ${strategies.compactWhitespace ? '是' : '否'}`);
+        lines.push(`移除註解 : ${strategies.stripComments ? '是' : '否'}`);
+        lines.push(`變數縮短 : ${strategies.renameVariables ? '是' : '否'}`);
+        lines.push(`函數縮短 : ${strategies.renameFunctions ? '是' : '否'}`);
+        compressionStatsPre.textContent = lines.join('\n');
+        compressedOutputArea.value = compressedOutput;
+        downloadCompressedBtn.disabled = false;
+        downloadVariableMapBtn.disabled = false;
+        downloadCompressionReportBtn.disabled = false;
+    }
+
+    async function runCompressionPipeline(fileEntries, options = {}) {
+        const strategy = {
+            collapseBlankLines: options.collapseBlankLines !== false,
+            compactWhitespace: options.compactWhitespace !== false,
+            stripComments: Boolean(options.stripComments),
+            renameVariables: options.renameVariables !== false,
+            renameFunctions: options.renameFunctions !== false
+        };
+        const rawBundle = buildRawBundle(fileEntries);
+        let processed = normalizeNewlines(rawBundle);
+        if (strategy.collapseBlankLines) {
+            processed = collapseBlankLines(processed);
+        }
+        if (strategy.stripComments) {
+            processed = removeAllComments(processed);
+        }
+        if (strategy.compactWhitespace) {
+            processed = compactWhitespace(processed);
+        }
+
+        const baseExistingWords = collectExistingWords(processed);
+        let variableReplacements = [];
+        let variableStats = { candidateCount: 0, appliedCount: 0 };
+        let usedShortNames = new Set();
+        let existingWords = new Set(baseExistingWords);
+
+        if (strategy.renameVariables) {
+            const variableResult = buildVariableReplacements(fileEntries, processed);
+            variableReplacements = variableResult.replacements;
+            variableStats = variableResult.stats;
+            usedShortNames = variableResult.usedShortNames;
+            existingWords = variableResult.existingWords;
+        }
+
+        let functionReplacements = [];
+        let functionStats = { candidateCount: 0, appliedCount: 0 };
+        if (strategy.renameFunctions) {
+            const functionResult = buildFunctionReplacements(fileEntries, processed, usedShortNames, existingWords);
+            functionReplacements = functionResult.replacements;
+            functionStats = functionResult.stats;
+        }
+
+        const allReplacements = [...variableReplacements, ...functionReplacements];
+        const compressedBody = applyReplacements(processed, allReplacements);
+        const mappingHeader = buildMappingHeader(variableReplacements, functionReplacements);
+        const compressedOutput = `${mappingHeader}${compressedBody}`;
+        const replacements = {
+            variables: variableReplacements,
+            functions: functionReplacements
+        };
+        const report = buildCompressionReport({
+            filesProcessed: fileEntries.length,
+            rawBundle,
+            compressedOutput,
+            replacements,
+            stats: {
+                variables: variableStats,
+                functions: functionStats
+            },
+            strategies: strategy
+        });
+        return { rawBundle, compressedOutput, replacements, report, mappingHeader, strategies: strategy };
+    }
+    
+    // --- Helper and Utility Functions ---
+
+    function getAllNodes(nodeMap, includeFolders = false) {
+        let nodes = [];
+        for (const node of nodeMap.values()) {
+            if (node.type === 'file' || (includeFolders && node.type === 'folder')) {
+                nodes.push(node);
+            }
+            if (node.type === 'folder' && node.children) {
+                nodes = nodes.concat(getAllNodes(node.children, includeFolders));
+            }
+        }
+        return nodes;
+    }
+
+    function isLikelyTextFile(filename) {
+        const extension = ('.' + filename.split('.').pop()).toLowerCase();
+        if (extension === '.' + filename.toLowerCase()) return true; 
+        return !NON_TEXT_EXTENSIONS.has(extension);
+    }
+    
+    function collectSelectedFiles(nodeMap) {
+        const sortedEntries = [...nodeMap.entries()].sort(([keyA, valA], [keyB, valB]) => valA.path.localeCompare(valB.path));
+        for (const [name, node] of sortedEntries) {
+            if (node.type === 'file' && node.selected && node.fileObject) {
+                lastSelectedFiles.push(node);
+            } else if (node.type === 'folder' && node.children) {
+                collectSelectedFiles(node.children);
+            }
+        }
+    }
+    
+    function generateDirectoryTreeString(nodeMap, prefix = '', isRoot = false) {
+        let treeString = isRoot ? (allFileObjects[0]?.webkitRelativePath.split('/')[0] || 'root') + '\n' : '';
+        const sortedEntries = [...nodeMap.entries()].sort(([keyA, valA], [keyB, valB]) => {
+            if (valA.type === 'folder' && valB.type === 'file') return -1;
+            if (valA.type === 'file' && valB.type === 'folder') return 1;
+            return keyA.localeCompare(keyB);
+        });
+        sortedEntries.forEach((entry, index) => {
+            const [name, node] = entry;
+            const isLast = index === sortedEntries.length - 1;
+            const connector = isLast ? '└── ' : '├── ';
+            const icon = node.type === 'folder' ? '📁' : '📄';
+            treeString += `${prefix}${connector}${icon} ${name}\n`;
+            if (node.type === 'folder' && node.children) {
+                const newPrefix = prefix + (isLast ? '    ' : '│   ');
+                treeString += generateDirectoryTreeString(node.children, newPrefix);
+            }
+        });
+        return treeString;
+    }
+
+    function estimateTokens(text) {
+        if (!text) return 0;
+        const cjkRegex = /[\u4e00-\u9fa5\u3040-\u30ff\uac00-\ud7af]/g;
+        const cjkMatches = text.match(cjkRegex);
+        const cjkChars = cjkMatches ? cjkMatches.length : 0;
+        const otherChars = text.length - cjkChars;
+        const tokens = Math.ceil((cjkChars * 1.5) + (otherChars * 0.3));
+        return tokens;
+    }
+
+    function buildRawBundle(files) {
+        return files
+            .map(file => {
+                const header = `// >>> ${file.relativePath} >>>`;
+                const footer = `// <<< END ${file.relativePath} <<<`;
+                const body = file.content.replace(/\s+$/u, '');
+                return `${header}\n${body}\n${footer}`;
+            })
+            .join('\n\n');
+    }
+
+    function normalizeNewlines(text) {
+        return text.replace(/\r\n?/g, '\n');
+    }
+
+    function collapseBlankLines(text) {
+        return text.replace(/\n{3,}/g, '\n\n');
+    }
+
+    function removeAllComments(text) {
+        return text
+            .replace(COMMENT_BLOCK_REGEX, '\n')
+            .replace(/\/\/[^\n]*$/gm, '');
+    }
+
+    function compactWhitespace(text) {
+        const normalized = text
+            .split('\n')
+            .map(line => line.trimEnd().replace(/^\s+/, ''))
+            .join('\n');
+        return normalized.replace(/\n{2,}/g, '\n');
+    }
+
+    function stripCommentsAndPreprocessor(text) {
+        return text
+            .replace(COMMENT_BLOCK_REGEX, ' ')
+            .replace(COMMENT_LINE_REGEX, (match, prefix) => `${prefix} `)
+            .replace(PREPROCESSOR_REGEX, ' ');
+    }
+
+    function extractVariableNames(body) {
+        const names = [];
+        const sanitized = stripCommentsAndPreprocessor(body);
+        const declarationRegex = /(?:^|[\s;,{}])(?!typedef)(?:const\s+|volatile\s+|static\s+|extern\s+|register\s+)*(?:struct\s+\w+\s+|enum\s+\w+\s+)?(?:unsigned\s+|signed\s+|long\s+|short\s+)*[A-Za-z_]\w*(?:\s*\*+)?\s+([^;{}()"']+);/gm;
+        let match;
+        while ((match = declarationRegex.exec(sanitized)) !== null) {
+            const declarators = match[1];
+            if (!declarators) {
+                continue;
+            }
+            declarators.split(',').forEach(chunk => {
+                const cleaned = chunk
+                    .replace(/\[[^\]]*\]/g, ' ')
+                    .replace(/=.*/g, ' ')
+                    .replace(/\*/g, ' ')
+                    .trim();
+                const nameMatch = cleaned.match(/([A-Za-z_]\w*)$/);
+                if (nameMatch) {
+                    names.push(nameMatch[1]);
+                }
+            });
+        }
+        return names;
+    }
+
+    function extractFunctionNames(body) {
+        const names = [];
+        const sanitized = stripCommentsAndPreprocessor(body);
+        const attributePattern = '(?:__attribute__\\s*\\([^)]*\\)\\s*)?';
+        const qualifierPattern = '(?:static\\s+|inline\\s+|extern\\s+|register\\s+|volatile\\s+|const\\s+|restrict\\s+|__forceinline\\s+)?';
+        const returnTypePattern = '(?:[A-Za-z_][A-Za-z0-9_\\s\\*]*?)';
+        const functionRegex = new RegExp(`(?:^|\\n)\\s*${attributePattern}${qualifierPattern}(?:${returnTypePattern}\\s+)+([A-Za-z_][A-Za-z0-9_]*)\\s*\\([^;{}]*\\)\\s*\\{`, 'g');
+        let match;
+        while ((match = functionRegex.exec(sanitized)) !== null) {
+            const name = match[1];
+            if (name) {
+                names.push(name);
+            }
+        }
+        return names;
+    }
+
+    function collectExistingWords(text) {
+        const words = new Set();
+        const regex = /\b([A-Za-z_][A-Za-z0-9_]*)\b/g;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            words.add(match[1]);
+        }
+        return words;
+    }
+
+    function shouldCompressName(name, count) {
+        if (RESERVED_IDENTIFIERS.has(name)) {
+            return false;
+        }
+        if (name.length < MIN_VARIABLE_NAME_LENGTH) {
+            return false;
+        }
+        if (/^[A-Z0-9_]+$/.test(name)) {
+            return false;
+        }
+        return count >= MIN_OCCURRENCE_THRESHOLD;
+    }
+
+    function shouldCompressFunctionName(name, count) {
+        if (RESERVED_FUNCTIONS.has(name)) {
+            return false;
+        }
+        if (name.length < MIN_FUNCTION_NAME_LENGTH) {
+            return false;
+        }
+        if (/^[A-Z0-9_]+$/.test(name)) {
+            return false;
+        }
+        return count >= MIN_FUNCTION_OCCURRENCE_THRESHOLD;
+    }
+
+    function allocateShortName(seedIndex, usedShortNames, existingWords) {
+        const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+        let index = seedIndex;
+        while (true) {
+            let candidate = '';
+            let current = index;
+            do {
+                candidate = alphabet[current % alphabet.length] + candidate;
+                current = Math.floor(current / alphabet.length) - 1;
+            } while (current >= 0);
+            if (!usedShortNames.has(candidate) && !existingWords.has(candidate) && !RESERVED_IDENTIFIERS.has(candidate)) {
+                return candidate;
+            }
+            index++;
+        }
+    }
+
+    function buildVariableReplacements(files, processedContent) {
+        const counts = new Map();
+        const sanitizedCorpus = files
+            .map(file => stripCommentsAndPreprocessor(file.content))
+            .join('\n');
+
+        for (const file of files) {
+            const candidates = extractVariableNames(file.content);
+            for (const name of candidates) {
+                if (!counts.has(name)) {
+                    counts.set(name, 0);
+                }
+            }
+        }
+
+        for (const name of counts.keys()) {
+            const regex = new RegExp(`\\b${escapeRegex(name)}\\b`, 'g');
+            const matches = sanitizedCorpus.match(regex);
+            counts.set(name, matches ? matches.length : 0);
+        }
+
+        const candidates = Array.from(counts.entries())
+            .filter(([name, count]) => shouldCompressName(name, count))
+            .sort((a, b) => b[1] - a[1]);
+
+        const replacements = [];
+        const usedShortNames = new Set();
+        const existingWords = collectExistingWords(processedContent);
+
+        candidates.forEach(([name, count], index) => {
+            const shortName = allocateShortName(index, usedShortNames, existingWords);
+            replacements.push({ original: name, short: shortName, count, kind: 'variable' });
+            usedShortNames.add(shortName);
+            existingWords.add(shortName);
+        });
+
+        return {
+            replacements,
+            stats: {
+                candidateCount: counts.size,
+                appliedCount: replacements.length
+            },
+            usedShortNames,
+            existingWords
+        };
+    }
+
+    function buildFunctionReplacements(files, processedContent, usedShortNames, existingWords) {
+        const counts = new Map();
+        const sanitizedCorpus = files
+            .map(file => stripCommentsAndPreprocessor(file.content))
+            .join('\n');
+
+        for (const file of files) {
+            const names = extractFunctionNames(file.content);
+            for (const name of names) {
+                if (!counts.has(name)) {
+                    counts.set(name, 0);
+                }
+            }
+        }
+
+        for (const name of counts.keys()) {
+            const regex = new RegExp(`\\b${escapeRegex(name)}\\b`, 'g');
+            const matches = sanitizedCorpus.match(regex);
+            counts.set(name, matches ? matches.length : 0);
+        }
+
+        const candidates = Array.from(counts.entries())
+            .filter(([name, count]) => shouldCompressFunctionName(name, count))
+            .sort((a, b) => b[1] - a[1]);
+
+        const replacements = [];
+        const seed = usedShortNames.size;
+
+        candidates.forEach(([name, count], index) => {
+            const shortName = allocateShortName(seed + index, usedShortNames, existingWords);
+            replacements.push({ original: name, short: shortName, count, kind: 'function' });
+            usedShortNames.add(shortName);
+            existingWords.add(shortName);
+        });
+
+        return {
+            replacements,
+            stats: {
+                candidateCount: counts.size,
+                appliedCount: replacements.length
+            }
+        };
+    }
+
+    function applyReplacements(content, replacements) {
+        let result = content;
+        replacements.forEach(entry => {
+            const regex = new RegExp(`\\b${escapeRegex(entry.original)}\\b`, 'g');
+            result = result.replace(regex, entry.short);
+        });
+        return result;
+    }
+
+    function buildMappingHeader(variableReplacements, functionReplacements) {
+        const sections = [];
+        const variableSection = buildMappingSection('Variable Map', variableReplacements);
+        if (variableSection) {
+            sections.push(variableSection);
+        }
+        const functionSection = buildMappingSection('Function Map', functionReplacements);
+        if (functionSection) {
+            sections.push(functionSection);
+        }
+        if (!sections.length) {
+            return '/* Identifier Map: no substitutions satisfied the current heuristics */\n\n';
+        }
+        return sections.join('\n') + '\n\n';
+    }
+
+    function buildMappingSection(title, entries) {
+        if (!entries.length) {
+            return '';
+        }
+        const lines = entries
+            .map(entry => `${entry.short} -> ${entry.original}`)
+            .join('\n');
+        return `/* ${title} (${entries.length} identifiers)\n${lines}\n*/`;
+    }
+
+    function escapeRegex(value) {
+        return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function buildCompressionReport({ filesProcessed, rawBundle, compressedOutput, replacements, stats, strategies = {} }) {
+        const rawBytes = textByteLength(rawBundle);
+        const compressedBytes = textByteLength(compressedOutput);
+        const rawTokens = estimateTokens(rawBundle);
+        const compressedTokens = estimateTokens(compressedOutput);
+        const deltaBytes = rawBytes - compressedBytes;
+        const deltaTokens = rawTokens - compressedTokens;
+        const variableCount = replacements.variables.length;
+        const functionCount = replacements.functions.length;
+        const normalizedStrategies = {
+            collapseBlankLines: Boolean(strategies.collapseBlankLines),
+            compactWhitespace: Boolean(strategies.compactWhitespace),
+            stripComments: Boolean(strategies.stripComments),
+            renameVariables: Boolean(strategies.renameVariables),
+            renameFunctions: Boolean(strategies.renameFunctions)
+        };
+        return {
+            generatedAt: new Date().toISOString(),
+            filesProcessed,
+            rawBytes,
+            compressedBytes,
+            rawTokenEstimate: rawTokens,
+            compressedTokenEstimate: compressedTokens,
+            byteSavings: deltaBytes,
+            tokenSavings: deltaTokens,
+            reductionPercent: rawBytes ? Number(((deltaBytes / rawBytes) * 100).toFixed(2)) : 0,
+            replacementsApplied: variableCount + functionCount,
+            variableReplacements: variableCount,
+            functionReplacements: functionCount,
+            candidateVariables: stats.variables.candidateCount,
+            candidateFunctions: stats.functions.candidateCount,
+            strategies: normalizedStrategies
+        };
+    }
+
+    function textByteLength(text) {
+        return new TextEncoder().encode(text).length;
+    }
+
+    function downloadTextBlob(content, filename) {
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+
+    function downloadJsonBlob(jsonData, filename) {
+        const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+    
+    // --- Export Functions ---
+    
+    async function handleSplitDownload() {
+        const tokenLimitStr = prompt("請輸入每個檔案的 Token 上限（例如：8000）。\n分割將以檔案為單位，避免截斷內容。", "8000");
+        if (!tokenLimitStr) return;
+        const tokenLimit = parseInt(tokenLimitStr, 10);
+        if (isNaN(tokenLimit) || tokenLimit <= 0) {
+            alert("請輸入一個有效的正整數。");
+            return;
+        }
+        if (lastSelectedFiles.length === 0) {
+            alert("沒有選取的檔案可以分割下載。");
+            return;
+        }
+        statusDiv.textContent = `正在準備分割檔案，上限為 ${tokenLimit.toLocaleString()} tokens...`;
+        let chunks = [];
+        let currentChunkContent = "";
+        let currentChunkTokens = 0;
+        let initialContent = '';
+        if (includeTreeCheckbox.checked) {
+            initialContent += '--- 目錄結構 ---\n';
+            initialContent += generateDirectoryTreeString(fileSystemTree, '', true);
+            initialContent += '\n--- 檔案內容 ---\n\n';
+        }
+        currentChunkContent = initialContent;
+        currentChunkTokens = estimateTokens(initialContent);
+        for (const node of lastSelectedFiles) {
+            try {
+                const fileContent = await node.fileObject.text();
+                const fileBlock = `路徑/${node.webkitRelativePath}內容如下：\n${fileContent}\n\n`;
+                const blockTokens = estimateTokens(fileBlock);
+                if (currentChunkContent !== initialContent && currentChunkTokens + blockTokens > tokenLimit) {
+                    chunks.push(currentChunkContent);
+                    currentChunkContent = initialContent + fileBlock;
+                    currentChunkTokens = estimateTokens(currentChunkContent);
+                } else {
+                    currentChunkContent += fileBlock;
+                    currentChunkTokens += blockTokens;
+                }
+            } catch (error) {
+                console.error(`分割時讀取檔案 ${node.path} 失敗:`, error);
+                const errorBlock = `路徑/${node.webkitRelativePath}內容如下：\n[錯誤：無法讀取檔案內容 - ${error.message}]\n\n`;
+                currentChunkContent += errorBlock;
+                currentChunkTokens += estimateTokens(errorBlock);
+            }
+        }
+        if (currentChunkContent !== initialContent && currentChunkContent.trim() !== "") {
+            chunks.push(currentChunkContent);
+        }
+        if (chunks.length === 0) {
+            alert("沒有內容可以下載。");
+            statusDiv.textContent = "操作完成。";
+            return;
+        }
+        statusDiv.textContent = `正在下載 ${chunks.length} 個分割檔案...`;
+        chunks.forEach((chunk, index) => {
+            const blob = new Blob([chunk], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `merged_content_part_${index + 1}_of_${chunks.length}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        });
+        statusDiv.textContent = `已成功下載 ${chunks.length} 個分割檔案。`;
+    }
+
+    async function handleCopyToClipboard() {
+        if (!outputArea.value) { alert('沒有內容可複製。'); return; }
+        try {
+            await navigator.clipboard.writeText(outputArea.value);
+            copyToClipboardButton.textContent = '已複製!';
+            copyToClipboardButton.disabled = true;
+            setTimeout(() => {
+                copyToClipboardButton.textContent = '複製到剪貼簿';
+                copyToClipboardButton.disabled = false;
+            }, 2000);
+        } catch (err) {
+            console.error('無法複製到剪貼簿:', err);
+            alert('複製失敗，您的瀏覽器可能不支援此功能。');
+        }
+    }
+
+    function handleDownloadTxt() {
+        if (!outputArea.value) { alert('沒有內容可下載。'); return; }
+        const blob = new Blob([outputArea.value], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'merged_content.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+
+    function handleDownloadPdf() {
+        if (!outputArea.value) { alert('沒有內容可下載。'); return; }
+        if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
+            alert('PDF 生成函式庫 (jsPDF) 未載入。');
+            return;
+        }
+        const { jsPDF: JsPDF } = window.jspdf;
+        const doc = new JsPDF();
+        doc.setFont('Courier'); 
+        doc.setFontSize(10);
+        const margin = 10;
+        const pageWidth = doc.internal.pageSize.getWidth() - 2 * margin;
+        const textLines = doc.splitTextToSize(outputArea.value, pageWidth);
+        let cursorY = margin;
+        const lineHeight = doc.getLineHeight() / doc.internal.scaleFactor;
+        textLines.forEach(line => {
+            if (cursorY + lineHeight > doc.internal.pageSize.getHeight() - margin) {
+                doc.addPage();
+                cursorY = margin;
+            }
+            doc.text(line, margin, cursorY);
+            cursorY += lineHeight;
+        });
+        try {
+            doc.save('merged_content.pdf');
+        } catch (e) {
+            console.error("生成 PDF 時發生錯誤:", e);
+            alert("生成 PDF 時發生錯誤。部分特殊字元可能無法正確顯示。");
+        }
+    }
+</script>
+</body>
+</html>

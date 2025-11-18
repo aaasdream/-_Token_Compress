@@ -1,0 +1,1614 @@
+{
+  "variables": [
+    {
+      "original": "TINV_boardFaultFlags",
+      "short": "f",
+      "count": 47,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_dq0",
+      "short": "g",
+      "count": 42,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_A_pu",
+      "short": "j",
+      "count": 33,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_B_pu",
+      "short": "k",
+      "count": 32,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_C_pu",
+      "short": "l",
+      "count": 32,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_sine",
+      "short": "o",
+      "count": 27,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_cosine",
+      "short": "p",
+      "count": 25,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_0_pu",
+      "short": "r",
+      "count": 24,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_angleSPLL_radians",
+      "short": "t",
+      "count": 21,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_THI_pu",
+      "short": "u",
+      "count": 20,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vdInv_pu",
+      "short": "w",
+      "count": 20,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vqInv_pu",
+      "short": "x",
+      "count": 20,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_clearPWMTrip",
+      "short": "y",
+      "count": 20,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_dq0_pos",
+      "short": "z",
+      "count": 19,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_deadBand",
+      "short": "aa",
+      "count": 19,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_closeGiLoop",
+      "short": "ab",
+      "count": 16,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_lab",
+      "short": "ac",
+      "count": 16,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_dq0_pos",
+      "short": "ad",
+      "count": 15,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_A_sensed_pu",
+      "short": "ae",
+      "count": 15,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_dq0_neg",
+      "short": "af",
+      "count": 14,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_sine_mains_A",
+      "short": "ag",
+      "count": 13,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vzInv_pu",
+      "short": "ah",
+      "count": 13,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_sine_mains_B",
+      "short": "ai",
+      "count": 12,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_sine_mains_C",
+      "short": "aj",
+      "count": 12,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vBusRefSlewed_pu",
+      "short": "ak",
+      "count": 12,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_deadBandSlewUpdate",
+      "short": "al",
+      "count": 11,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dLog1",
+      "short": "am",
+      "count": 11,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_system_state",
+      "short": "ao",
+      "count": 10,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vBus_sensed_pu",
+      "short": "ap",
+      "count": 10,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_startPowerStage",
+      "short": "aq",
+      "count": 10,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dVal1",
+      "short": "ar",
+      "count": 10,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dVal2",
+      "short": "au",
+      "count": 10,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dVal3",
+      "short": "av",
+      "count": 10,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dVal4",
+      "short": "aw",
+      "count": 10,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_internalRef_dq0_pos",
+      "short": "ax",
+      "count": 9,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_internalRef_dq0_neg",
+      "short": "ay",
+      "count": 9,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_gv_mid_control",
+      "short": "az",
+      "count": 9,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_A_sensed_pu",
+      "short": "ba",
+      "count": 9,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_angle_radians",
+      "short": "bb",
+      "count": 9,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_sfra1",
+      "short": "bc",
+      "count": 9,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_gi_id",
+      "short": "bd",
+      "count": 8,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_gv_vBus",
+      "short": "bf",
+      "count": 8,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_spll_3ph_1",
+      "short": "bg",
+      "count": 8,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_spll_3ph_2",
+      "short": "bh",
+      "count": 8,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_C_sensed_pu",
+      "short": "bi",
+      "count": 8,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_angleFixed_radians",
+      "short": "bj",
+      "count": 8,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_idRef_pu",
+      "short": "bk",
+      "count": 8,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR1_Loading",
+      "short": "bl",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_rgen",
+      "short": "bm",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_gi_iq",
+      "short": "bn",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_gi_id_out",
+      "short": "bo",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_gv_vBus_out",
+      "short": "bp",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_B_sensed_pu",
+      "short": "bq",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_B_sensed_pu",
+      "short": "br",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_C_sensed_pu",
+      "short": "bs",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGrid_A_sensed_pu",
+      "short": "bt",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGrid_B_sensed_pu",
+      "short": "bu",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGrid_C_sensed_pu",
+      "short": "bv",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vMid_sensed_pu",
+      "short": "bw",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_THI_v1_pu",
+      "short": "bx",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_THI_v2_pu",
+      "short": "bz",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_THI_v3_pu",
+      "short": "ca",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_sine_A",
+      "short": "cb",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_deadBandMin",
+      "short": "cc",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_allRelayState",
+      "short": "cd",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_allRelaySet",
+      "short": "ce",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_phaseRelayState",
+      "short": "cf",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_phaseRelaySet",
+      "short": "cg",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_neutralRelayState",
+      "short": "ch",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_neutralRelaySet",
+      "short": "ci",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_fanState",
+      "short": "cj",
+      "count": 7,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_A_sensed_prev_pu",
+      "short": "ck",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vBus_sensed_Filtered_pu",
+      "short": "cl",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_Delta_V_Mid_sensed_pu_AVG",
+      "short": "cm",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vdInvRef_pu",
+      "short": "cn",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vqInvRef_pu",
+      "short": "co",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vBusRef_pu",
+      "short": "cp",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vBus_sensed_Volts",
+      "short": "cq",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_activePowerFilt",
+      "short": "cr",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_reactivePowerFilt",
+      "short": "cs",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_closeGvLoop",
+      "short": "ct",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_iInvA_overCurrent",
+      "short": "cu",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_iInvB_overCurrent",
+      "short": "cv",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_iInvC_overCurrent",
+      "short": "cw",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_iGridA_overCurrent",
+      "short": "cx",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_iGridB_overCurrent",
+      "short": "cy",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_iGridC_overCurrent",
+      "short": "cz",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_DSATA",
+      "short": "da",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_DSATB",
+      "short": "db",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "fault_DSATC",
+      "short": "dc",
+      "count": 6,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR1_LoadingMax",
+      "short": "dd",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_A_sensed_pu",
+      "short": "de",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_B_sensed_pu",
+      "short": "df",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_C_sensed_pu",
+      "short": "dg",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vBus_sensed_FilteredAndClamped_pu",
+      "short": "dh",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_sine_B",
+      "short": "di",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_sine_C",
+      "short": "dj",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iqRef_pu",
+      "short": "dk",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_firstTimeGvLoop",
+      "short": "dl",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_A_ref_pu",
+      "short": "dm",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_B_ref_pu",
+      "short": "dn",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_duty_C_ref_pu",
+      "short": "dp",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGridRms_A_sensed_Volts",
+      "short": "dq",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGridRms_B_sensed_Volts",
+      "short": "dr",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGridRms_C_sensed_Volts",
+      "short": "ds",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_deadBandMax",
+      "short": "dt",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_state",
+      "short": "du",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_resetAllFaultStatus",
+      "short": "dv",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_fanSet",
+      "short": "dw",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_forceSensingConversion",
+      "short": "dx",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_reset_PLL",
+      "short": "dy",
+      "count": 5,
+      "kind": "variable"
+    },
+    {
+      "original": "ledCnt1",
+      "short": "dz",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "dutyA_ticks",
+      "short": "ea",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "dutyB_ticks",
+      "short": "eb",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "dutyC_ticks",
+      "short": "ec",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR1cap1Count",
+      "short": "ee",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR1cap3Count",
+      "short": "ef",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR2cap1Count",
+      "short": "eg",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR2cap3Count",
+      "short": "eh",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR2_LoadingAvg",
+      "short": "ei",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGrid_dq0_pos",
+      "short": "ej",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_gi_iq_out",
+      "short": "ek",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_A_sensedOffset_pu",
+      "short": "el",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_B_sensedOffset_pu",
+      "short": "em",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_C_sensedOffset_pu",
+      "short": "en",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_A_sensedOffset_pu",
+      "short": "eo",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_B_sensedOffset_pu",
+      "short": "ep",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_C_sensedOffset_pu",
+      "short": "er",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_A_sensedOffset_pu",
+      "short": "es",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_B_sensedOffset_pu",
+      "short": "et",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_C_sensedOffset_pu",
+      "short": "eu",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_Delta_V_Mid_sensed_pu",
+      "short": "ev",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_activePower",
+      "short": "ew",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_reactivePower",
+      "short": "ex",
+      "count": 4,
+      "kind": "variable"
+    },
+    {
+      "original": "isr1Ticker",
+      "short": "ey",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "isr2Ticker",
+      "short": "ez",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR1cap2Count",
+      "short": "fa",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR1cap4Count",
+      "short": "fb",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR2cap2Count",
+      "short": "fc",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR2cap4Count",
+      "short": "fd",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_ISR2_Loading",
+      "short": "fe",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_busOverVoltageFlag",
+      "short": "ff",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_temp_A_sensed_pu",
+      "short": "fg",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_temp_B_sensed_pu",
+      "short": "fh",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_temp_C_sensed_pu",
+      "short": "fi",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_temp_AMB_sensed_pu",
+      "short": "fj",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_cosine_A",
+      "short": "fk",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_cosine_B",
+      "short": "fl",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_cosine_C",
+      "short": "fm",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_A_sensed_Volts",
+      "short": "fn",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_B_sensed_Volts",
+      "short": "fo",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vGrid_C_sensed_Volts",
+      "short": "fp",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGrid_A_sensed_Amps",
+      "short": "fq",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGrid_B_sensed_Amps",
+      "short": "fr",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGrid_C_sensed_Amps",
+      "short": "fs",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_A_sensed_Amps",
+      "short": "ft",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_B_sensed_Amps",
+      "short": "fu",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iInv_C_sensed_Amps",
+      "short": "fv",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_A_sensed_Volts",
+      "short": "fw",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_B_sensed_Volts",
+      "short": "fx",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vInv_C_sensed_Volts",
+      "short": "fy",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_vMid_sensed_Volts",
+      "short": "fz",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_gridFreq_sensed_Hz",
+      "short": "ga",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_powerRms_A_Watts",
+      "short": "gb",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_powerRms_B_Watts",
+      "short": "gc",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_powerRms_C_Watts",
+      "short": "gd",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGridRms_A_sensed_Amps",
+      "short": "ge",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGridRms_B_sensed_Amps",
+      "short": "gf",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_iGridRms_C_sensed_Amps",
+      "short": "gg",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_powerFactor_A",
+      "short": "gh",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_powerFactor_B",
+      "short": "gi",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_powerFactor_C",
+      "short": "gj",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_closePLL",
+      "short": "gk",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dBuff1",
+      "short": "gl",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dBuff2",
+      "short": "gm",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dBuff3",
+      "short": "gn",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "TINV_dBuff4",
+      "short": "gp",
+      "count": 3,
+      "kind": "variable"
+    },
+    {
+      "original": "pad",
+      "short": "gq",
+      "count": 3,
+      "kind": "variable"
+    }
+  ],
+  "functions": [
+    {
+      "original": "TINV_HAL_clearPWMTripFlags",
+      "short": "gr",
+      "count": 49,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_updatePWMDuty",
+      "short": "gs",
+      "count": 12,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_clearPWMInterruptFlag",
+      "short": "gt",
+      "count": 8,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_enableGateRST",
+      "short": "gu",
+      "count": 8,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_readCurrentAndVoltageSignals",
+      "short": "gv",
+      "count": 8,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_filterAndCheckForBusOverVoltage",
+      "short": "gw",
+      "count": 8,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runSPLL",
+      "short": "gx",
+      "count": 8,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupPWMforTrip",
+      "short": "gy",
+      "count": 7,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupPWMinUpDownCountComplimentaryMode",
+      "short": "gz",
+      "count": 7,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_updatePWMDeadBand",
+      "short": "ha",
+      "count": 7,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runTransformOnSensedSignals",
+      "short": "hb",
+      "count": 7,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_Third_Harmonic_Injection",
+      "short": "hc",
+      "count": 6,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_disablePWM",
+      "short": "hd",
+      "count": 5,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runCurrentLoop",
+      "short": "he",
+      "count": 5,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupCMPSS",
+      "short": "hf",
+      "count": 4,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_runGridCurrentProtection",
+      "short": "hg",
+      "count": 4,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_clearISR1InterruptFlag",
+      "short": "hh",
+      "count": 4,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_generateInternalReference",
+      "short": "hi",
+      "count": 4,
+      "kind": "function"
+    },
+    {
+      "original": "Cla1Task1",
+      "short": "hj",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "Cla1Task2",
+      "short": "hk",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "Cla1Task3",
+      "short": "hl",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "Cla1Task4",
+      "short": "hm",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "Cla1Task5",
+      "short": "hn",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "Cla1Task6",
+      "short": "ho",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "Cla1Task7",
+      "short": "hp",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupDevice",
+      "short": "hq",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupADC",
+      "short": "hr",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupSDFM",
+      "short": "hs",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_configureECAPforSDFMClk",
+      "short": "ht",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_configurePWMsyncforSDFM",
+      "short": "hu",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupEPWMtoTriggerADCSOC",
+      "short": "hv",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupBoardProtection",
+      "short": "hw",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_disablePWMCLKCounting",
+      "short": "hx",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_enablePWMCLKCounting",
+      "short": "hy",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupAllGPIO",
+      "short": "hz",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupLEDGPIO",
+      "short": "ia",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupFanGPIO",
+      "short": "ib",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupPWMENGPIO",
+      "short": "ic",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupRDYGPIO",
+      "short": "id",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupProfilingGPIO",
+      "short": "ie",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupRelayGPIO",
+      "short": "ig",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupGateControlGPIO",
+      "short": "ih",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupPWM",
+      "short": "ii",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupGateDrivePWM",
+      "short": "ij",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setPinsAsPWM",
+      "short": "ik",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_configureDAC",
+      "short": "il",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupECAPforProflingCode",
+      "short": "im",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupCLA",
+      "short": "io",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setProfilingGPIO",
+      "short": "ip",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_resetProfilingGPIO",
+      "short": "iq",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_setupSFRA",
+      "short": "ir",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runSFRABackGroundTasks",
+      "short": "iu",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_globalVariablesInit",
+      "short": "iv",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_updateFaultStatus",
+      "short": "iw",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_autoStartPFC",
+      "short": "ix",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runISR1_lab1",
+      "short": "iy",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runISR1_lab2",
+      "short": "iz",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runISR1_lab3",
+      "short": "ja",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runISR1_lab4",
+      "short": "jb",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runISR1_lab5",
+      "short": "jc",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runISR1_lab6",
+      "short": "jd",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runISR1_lab7",
+      "short": "je",
+      "count": 3,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_configurePWM1chUpCnt",
+      "short": "jf",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_toggleLED",
+      "short": "jg",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_enablePWMInterruptGeneration",
+      "short": "jh",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_forceOneTimeADCConversions",
+      "short": "ji",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_disableADCConversions",
+      "short": "jj",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_closePhaseRelay",
+      "short": "jk",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_openPhaseRelay",
+      "short": "jl",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_closeNeutralRelay",
+      "short": "jm",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_openNeutralRelay",
+      "short": "jn",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_enablePWM",
+      "short": "jo",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_disableGateRST",
+      "short": "jp",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_iInvA_overCurrentFlag",
+      "short": "jq",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_iInvB_overCurrentFlag",
+      "short": "jr",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_iInvC_overCurrentFlag",
+      "short": "js",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_iGridA_overCurrentFlag",
+      "short": "jt",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_iGridB_overCurrentFlag",
+      "short": "ju",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_iGridC_overCurrentFlag",
+      "short": "jv",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_faultAFlag",
+      "short": "jw",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_faultBFlag",
+      "short": "jx",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_get_faultCFlag",
+      "short": "jy",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_clearAllFaultFlags",
+      "short": "jz",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_fanOn",
+      "short": "ka",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_fanOff",
+      "short": "kb",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setProfilingGPIO2",
+      "short": "kc",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_resetProfilingGPIO2",
+      "short": "kd",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_HAL_setupInterrupt",
+      "short": "ke",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_readTempratureSignals",
+      "short": "kf",
+      "count": 2,
+      "kind": "function"
+    },
+    {
+      "original": "TINV_runISR2",
+      "short": "kg",
+      "count": 2,
+      "kind": "function"
+    }
+  ]
+}

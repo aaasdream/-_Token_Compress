@@ -1,0 +1,9 @@
+{
+  "name": "c_compress",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Node utilities for merging and token-optimizing C source bundles",
+  "scripts": {
+    "compress": "node tools/compress.js"
+  }
+}
